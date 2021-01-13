@@ -21,10 +21,15 @@ $ docker push <docker-image:tag>
 xxxxxxxxxx: Pushed
 ```
 #### Deploy the daemonset
-Deploying the plugin involves the deployment of the
-[SGX DaemonSet YAML](/deployments/sgx_plugin/base/intel-sgx-plugin.yaml) with the necessary configuration, including the the built and tagged docker image. The YAML file can then be deployed as follows: 
+Deploying the plugin involves the deployment of the ServiceAccount and ClusterRole required for SGX extended resource manager to advertise and access node resources, in addition to deployment of the daemonset in [SGX DaemonSet YAML](/deployments/sgx_plugin/base/intel-sgx-plugin.yaml) with the necessary configuration, including the the built and tagged docker image. The YAML file can be deployed as follows: 
 ```bash
 $ cd ${INTEL_DEVICE_PLUGINS_SRC}
+$ kubectl apply -f ${INTEL_DEVICE_PLUGINS_SRC}/deployments/sgx_plugin/base/role.yml
+...
+serviceaccount/sgx-extres-api created
+clusterrole.rbac.authorization.k8s.io/sgx-extres-reader created
+clusterrolebinding.rbac.authorization.k8s.io/sgx-extres-reader created
+
 $ kubectl apply -f ${INTEL_DEVICE_PLUGINS_SRC}/deployments/sgx_plugin/base/intel-sgx-plugin.yaml
 ...
 daemonset.apps/intel-sgx-plugin created
