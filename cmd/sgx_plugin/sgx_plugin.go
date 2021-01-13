@@ -69,8 +69,8 @@ func (dp *devicePlugin) scan() (dpapi.DeviceTree, error) {
 	devTree := dpapi.NewDeviceTree()
 
 	// Assume that both /dev/sgx_enclave and /dev/sgx_provision must be present.
-	sgxEnclavePath := path.Join(dp.devfsDir, "sgx_enclave")
-	sgxProvisionPath := path.Join(dp.devfsDir, "sgx_provision")
+	sgxEnclavePath := path.Join(dp.devfsDir, "sgx/enclave")
+	sgxProvisionPath := path.Join(dp.devfsDir, "sgx/provision")
 	if _, err := os.Stat(sgxEnclavePath); err != nil {
 		klog.Error("No SGX enclave file available: ", err)
 		return devTree, nil

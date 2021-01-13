@@ -13,15 +13,21 @@ spec:
       labels:
         app: intel-sgx-plugin
     spec:
+      serviceAccountName: sgx-extres-api
       initContainers:
       - name: intel-sgx-initcontainer
-        image: intel/intel-sgx-initcontainer:devel
-        imagePullPolicy: IfNotPresent
+        image: praneja/sgx-resource-manager:0.1
+        imagePullPolicy: Always
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
         securityContext:
-          readOnlyRootFilesystem: true
-        volumeMounts:
-        - mountPath: /etc/kubernetes/node-feature-discovery/source.d/
-          name: nfd-source-hooks
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
       containers:
       - name: intel-sgx-plugin
         image: intel/intel-sgx-plugin:devel
@@ -35,10 +41,10 @@ spec:
           mountPath: /dev/sgx
           readOnly: true
         - name: sgx-enclave
-          mountPath: /dev/sgx_enclave
+          mountPath: /dev/sgxe/nclave
           readOnly: true
         - name: sgx-provision
-          mountPath: /dev/sgx_provision
+          mountPath: /dev/sgx/provision
           readOnly: true
       volumes:
       - name: kubeletsockets
@@ -50,13 +56,9 @@ spec:
           type: DirectoryOrCreate
       - name: sgx-enclave
         hostPath:
-          path: /dev/sgx_enclave
+          path: /dev/sgx/enclave
           type: CharDevice
       - name: sgx-provision
         hostPath:
-          path: /dev/sgx_provision
+          path: /dev/sgx/provision
           type: CharDevice
-      - name: nfd-source-hooks
-        hostPath:
-          path: /etc/kubernetes/node-feature-discovery/source.d/
-          type: DirectoryOrCreate
