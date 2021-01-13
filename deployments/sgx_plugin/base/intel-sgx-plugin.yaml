@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: intel-sgx-plugin
+  namespace: kube-system
   labels:
     app: intel-sgx-plugin
 spec:
@@ -30,10 +31,10 @@ spec:
               - ALL
       containers:
       - name: intel-sgx-plugin
-        image: intel/intel-sgx-plugin:devel
+        image: praneja/intel-sgx-plugin:0.1
         securityContext:
           readOnlyRootFilesystem: true
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         volumeMounts:
         - name: kubeletsockets
           mountPath: /var/lib/kubelet/device-plugins
@@ -41,7 +42,7 @@ spec:
           mountPath: /dev/sgx
           readOnly: true
         - name: sgx-enclave
-          mountPath: /dev/sgxe/nclave
+          mountPath: /dev/sgx/enclave
           readOnly: true
         - name: sgx-provision
           mountPath: /dev/sgx/provision

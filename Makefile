@@ -124,9 +124,9 @@ packagemanifests:
 clean:
 	@for cmd in $(cmds) ; do pwd=$(shell pwd) ; cd cmd/$$cmd ; $(GO) clean ; cd $$pwd ; done
 
-ORG?=intel
+ORG?=praneja
 REG?=$(ORG)/
-TAG?=devel
+TAG?=0.1
 export TAG
 
 pre-pull:
